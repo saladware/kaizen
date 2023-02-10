@@ -1,0 +1,10 @@
+/.env
+/.idea
+__pycache__
+/postgres_data
+/venv
+/.vscode
+/README.md
+/Dockerfile
+/docker-compose.yml
+/.env.example
