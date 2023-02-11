@@ -8,7 +8,7 @@
 
 ## Запуск
 
-Для запуска ссистемы необходимо [установить docker-compose](https://docs.docker.com/get-docker/)
+Для запуска системы необходимо [установить docker-compose](https://docs.docker.com/get-docker/)
 ```commandline
 docker-compose up -d
 ```

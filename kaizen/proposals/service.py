@@ -8,7 +8,7 @@ from sqlalchemy import func, select
 from .models import Proposal, ProposalAuthor
 from .schemas import CreateProposal
 from ..users.models import User
-from ..exceptions import EntityAlreadyExists
+from ..exceptions import EntityAlreadyExists, EntityNotExists
 
 
 async def proposal_add_author(session: AsyncSession, proposal: Proposal, author: User):
@@ -39,18 +39,21 @@ async def create_proposal(session: AsyncSession, data: CreateProposal, initiator
     session.add(proposal)
     try:
         await session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         raise EntityAlreadyExists("proposal with this title already exists")
     await session.refresh(proposal)
     await proposal_add_author(session, proposal, initiator)
     return proposal
 
 
-async def get_proposal_details(session: AsyncSession, proposal_id: UUID):
+async def get_proposal(session: AsyncSession, proposal_id: UUID) -> Proposal:
     result = await session.execute(
         statement=select(Proposal).where(Proposal.id == proposal_id)
     )
-    return result.scalar_one()
+    proposal = result.scalar_one_or_none()
+    if proposal is None:
+        raise EntityNotExists("Proposal not found")
+    return proposal
 
 
 async def get_user_proposals(session: AsyncSession, user_id: UUID) -> list[Proposal]:
@@ -62,5 +65,12 @@ async def get_user_proposals(session: AsyncSession, user_id: UUID) -> list[Propo
     return list(result.scalars())
 
 
-async def edit_proposal(session: AsyncSession, proposal_id: UUID, data):
+async def get_proposal_authors(session: AsyncSession, proposal_id: UUID) -> list[ProposalAuthor]:
+    result = await session.execute(
+        select(ProposalAuthor).filter(ProposalAuthor.proposal_id == proposal_id)
+    )
+    return list(result.scalars())
+
+
+async def edit_proposal(session: AsyncSession, proposal: Proposal, data):
     ...

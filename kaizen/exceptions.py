@@ -1,14 +1,14 @@
-class ProposalsException(Exception):
+class KaizenException(Exception):
     ...
 
 
-class EntityAlreadyExists(ProposalsException):
+class EntityAlreadyExists(KaizenException):
     ...
 
 
-class EntityNotExists(ProposalsException):
+class EntityNotExists(KaizenException):
     ...
 
 
-class PermissionDenied(ProposalsException):
+class PermissionDenied(KaizenException):
     ...
