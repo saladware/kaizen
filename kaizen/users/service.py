@@ -1,18 +1,14 @@
 from datetime import timedelta, datetime
 from uuid import UUID
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
+from jose import jwt
 from passlib.context import CryptContext
 from PIL import ImageDraw, Image
 import numpy as np
 import hashlib
 
 from .models import User
-from .schemas import RegisterUser, EditUser
 from ..config import ALGORITHM, SECRET_KEY
-from ..db import get_session
 from ..exceptions import EntityAlreadyExists, EntityNotExists, PermissionDenied
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,13 +26,14 @@ def _verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
 
 
-async def create_user(session: AsyncSession, data: RegisterUser) -> User:
+async def create_user(session: AsyncSession, email: str, password: str, fullname: str, post: str,
+                      department: str) -> User:
     user = User(
-        email=data.email,
-        hashed_password=_hash_password(data.password),
-        fullname=data.fullname,
-        post=data.post,
-        department=data.department
+        email=email,
+        hashed_password=_hash_password(password),
+        fullname=fullname,
+        post=post,
+        department=department
     )
     session.add(user)
     try:
@@ -63,9 +60,16 @@ async def get_user_by_email_or_none(session: AsyncSession, email: str) -> User |
     return cursor.scalar_one_or_none()
 
 
-async def change_user_details(session: AsyncSession, user: User, data: EditUser):
-    for key, value in data.dict(exclude_none=True).items():
-        setattr(user, key, value)
+async def change_user_details(session: AsyncSession, user: User, fullname: str | None = None,
+                              email: str | None = None, department: str | None = None, post: str | None = None):
+    if fullname is not None:
+        user.fullname = fullname
+    if email is not None:
+        user.email = email
+    if department is not None:
+        user.department = department
+    if post is not None:
+        user.post = post
     try:
         await session.commit()
     except IntegrityError:

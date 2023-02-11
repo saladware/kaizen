@@ -43,7 +43,7 @@ async def change_my_details(
         session: AsyncSession = Depends(get_session),
         user: User = Depends(get_current_user)
 ) -> schemas.User:
-    await service.change_user_details(session, user, user_data)
+    await service.change_user_details(session, user, **user_data.dict())
     return user
 
 
@@ -62,7 +62,7 @@ async def register_user(
         session: AsyncSession = Depends(get_session),
         _: User = Depends(get_admin)
 ) -> schemas.User:
-    user = await service.create_user(session, user_data)
+    user = await service.create_user(session, **user_data.dict())
     return user
 
 
@@ -77,7 +77,7 @@ async def edit_user_details(
         user: User = Depends(get_user_from_path),
         session: AsyncSession = Depends(get_session)
 ) -> schemas.User:
-    await service.change_user_details(session, user, user_data)
+    await service.change_user_details(session, user, **user_data.dict())
     return user
 
 
@@ -87,9 +87,4 @@ async def change_password(
         user: User = Depends(get_user_from_path),
         session: AsyncSession = Depends(get_session)
 ):
-    await service.change_user_password(
-        session=session,
-        user=user,
-        old_password=data.old_password,
-        new_password=data.new_password
-    )
+    await service.change_user_password(session, user, data.old_password, data.new_password)
