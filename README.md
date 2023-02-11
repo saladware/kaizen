@@ -1,5 +1,6 @@
 # kaizen
 [![Docker Image CI](https://github.com/saladware/kaizen/actions/workflows/docker-image.yml/badge.svg)](https://github.com/saladware/kaizen/actions/workflows/docker-image.yml)
+
 **kaizen** - _система управления предложениями по улучшению_
 
 ![Kaizen.png](./docs/Kaizen.png)
