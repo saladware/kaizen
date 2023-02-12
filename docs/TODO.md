@@ -1,6 +1,6 @@
 # TODO
 
-* [ ] edit proposal
+* [ ] edit proposal, delete proposal
 * [ ] Обработка конкретных исключений для sqlalchemy.exc.IntegrityError
 * [ ] бизнес логика proposals
 * [ ] пользовательское соглашение, политика конфеденциальности, лицензия
@@ -17,8 +17,6 @@
 * [ ] генератор фейковых данных (пропозалы и юзеры)
 * [ ] логирование
 * [ ] cooldown middleware
-* [ ] users.register_at proposals.created_at
 * [ ] CORS middleware
 * [ ] ограничение на поля схем по таблицам
-* [ ] is_active на юзерах и is_removed на пропозалах
 * [ ] переопределить фастапишные ошибки, возможно ошибки pydantic

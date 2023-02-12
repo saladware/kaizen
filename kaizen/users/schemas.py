@@ -1,3 +1,4 @@
+import datetime
 from enum import Enum
 from uuid import UUID
 
@@ -26,6 +27,7 @@ class User(BaseModel):
     email: EmailStr
     department: str
     post: str
+    registered_at: datetime.datetime
 
     class Config:
         orm_mode = True

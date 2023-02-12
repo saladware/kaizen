@@ -21,6 +21,7 @@ class ProposalCategory(str, Enum):
 class ProposalAuthor(BaseModel):
     user_id: UUID
     weight: float
+    created_at: datetime.datetime
 
 
 class CreateProposal(BaseModel):
@@ -32,7 +33,7 @@ class CreateProposal(BaseModel):
 
 
 class ProposalVerification(BaseModel):
-    date: datetime.datetime
+    verified_at: datetime.datetime
     controller: User
     result: VerificationResult
 
@@ -42,6 +43,7 @@ class Proposal(BaseModel):
     number: str | None
     title: str
     registered_at: datetime.datetime | None
+    created_at: datetime.datetime
     problem_description: str
     proposal_content: str
     expected_result: str
@@ -58,6 +60,7 @@ class ProposalDetails(BaseModel):
     number: str | None
     title: str
     registered_at: datetime.datetime | None
+    created_at: datetime.datetime
     problem_description: str
     proposal_content: str
     expected_result: str

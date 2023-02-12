@@ -32,12 +32,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return schemas.Token(access_token=access_token, token_type="bearer")
 
 
-@users.get('/me')
+@users.get('/me', tags=['me'])
 async def get_my_details(user: User = Depends(get_current_user)) -> schemas.User:
     return user
 
 
-@users.put('/me')
+@users.put('/me', tags=['me'])
 async def change_my_details(
         user_data: schemas.EditUser,
         session: AsyncSession = Depends(get_session),
@@ -47,7 +47,7 @@ async def change_my_details(
     return user
 
 
-@users.put('/me/password')
+@users.put('/me/password', tags=['me'])
 async def change_my_password(
     data: schemas.ChangeUserPassword,
     session: AsyncSession = Depends(get_session),
@@ -56,7 +56,7 @@ async def change_my_password(
     await service.change_user_password(session, user, data.old_password, data.new_password)
 
 
-@users.post("/")
+@users.post("/", tags=['admin'])
 async def register_user(
         user_data: schemas.RegisterUser,
         session: AsyncSession = Depends(get_session),
@@ -66,12 +66,12 @@ async def register_user(
     return user
 
 
-@users.get("/{user_id}")
+@users.get("/{user_id}", tags=['admin'])
 async def get_user_details(user: User = Depends(get_user_from_path)) -> schemas.User:
     return user
 
 
-@users.put("/{user_id}")
+@users.put("/{user_id}", tags=['admin'])
 async def edit_user_details(
         user_data: schemas.EditUser,
         user: User = Depends(get_user_from_path),
@@ -81,7 +81,7 @@ async def edit_user_details(
     return user
 
 
-@users.put("/{user_id}/password")
+@users.put("/{user_id}/password", tags=['admin'])
 async def change_password(
         data: schemas.ChangeUserPassword,
         user: User = Depends(get_user_from_path),
