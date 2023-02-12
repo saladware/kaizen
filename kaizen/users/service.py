@@ -76,6 +76,14 @@ async def change_user_details(session: AsyncSession, user: User, fullname: str |
         raise EntityAlreadyExists("user with this email already exists")
 
 
+async def deactivate_user(session: AsyncSession, user_id: UUID):
+    user = await get_user(session, user_id)
+    if not user.is_active:
+        raise EntityNotExists("user already inactive")
+    user.is_active = False
+    await session.commit()
+
+
 async def change_user_password(session: AsyncSession, user: User, old_password: str, new_password: str):
     if not _verify_password(old_password, user.hashed_password):
         raise PermissionDenied("incorrent password")
@@ -85,6 +93,8 @@ async def change_user_password(session: AsyncSession, user: User, old_password: 
 
 async def authenticate_user(session: AsyncSession, email: str, password: str) -> User | None:
     user = await get_user_by_email_or_none(session, email)
+    if not user.is_active:
+        raise PermissionDenied('user is inactive')
     if user is not None and _verify_password(password, user.hashed_password):
         return user
 

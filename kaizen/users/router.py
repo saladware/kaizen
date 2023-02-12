@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .service import authenticate_user, create_access_token
-from .access import get_current_user, get_admin, get_user_from_path
+from .dependencies import get_current_user, get_current_admin, get_user_from_path
 from .models import User
 from ..config import ACCESS_TOKEN_EXPIRE_MINUTES
 from ..db import get_session
@@ -60,7 +60,7 @@ async def change_my_password(
 async def register_user(
         user_data: schemas.RegisterUser,
         session: AsyncSession = Depends(get_session),
-        _: User = Depends(get_admin)
+        _: User = Depends(get_current_admin)
 ) -> schemas.User:
     user = await service.create_user(session, **user_data.dict())
     return user
@@ -88,3 +88,8 @@ async def change_password(
         session: AsyncSession = Depends(get_session)
 ):
     await service.change_user_password(session, user, data.old_password, data.new_password)
+
+
+@users.delete('/{user_id}', tags=['admin'], dependencies=[Depends(get_current_admin)])
+async def deactivate_user(user_id: UUID, session: AsyncSession = Depends(get_session)):
+    await service.deactivate_user(session, user_id)

@@ -1,13 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..db import get_session
 from . import service, schemas
 from ..users.models import User
-from ..users.access import get_current_user
-from ..exceptions import EntityAlreadyExists
+from ..users.dependencies import get_current_user
+
 
 proposals = APIRouter(
     prefix='/proposals',

@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import Column, String, Text, Enum, text, DateTime, func
+from sqlalchemy import Column, String, Text, Enum, text, DateTime, func, Boolean
 
 from ..db import Base
 from sqlalchemy.dialects.postgresql import UUID
@@ -19,5 +19,6 @@ class User(Base):
     post: str = Column(String(264), nullable=False)
     role: Role = Column(Enum(Role), server_default="EMPLOYEE")
     hashed_password: str = Column(Text, nullable=False)
+    is_active: bool = Column(Boolean, server_default=text("true"))
     registered_at: datetime.datetime = Column(DateTime(timezone=True), server_default=func.now())
 
