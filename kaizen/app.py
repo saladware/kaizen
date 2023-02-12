@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
-
+from fastapi.middleware.cors import CORSMiddleware
 from .proposals.router import proposals
 from .users.router import users
 from . import exceptions
@@ -9,7 +9,19 @@ from . import exceptions
 app = FastAPI(
     title='Управление ППУ',
     description='web application for manage improvement proposals',
-    version='0.1.2'
+    version='0.0.1'
+)
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
